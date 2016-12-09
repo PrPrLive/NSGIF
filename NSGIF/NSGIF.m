@@ -9,7 +9,7 @@
 @implementation NSGIF
 
 // Declare constants
-#define fileName     @"NSGIF"
+#define fileName     @"GIF"
 #define timeInterval @(600)
 #define tolerance    @(0.01)
 
@@ -95,7 +95,7 @@ typedef NS_ENUM(NSInteger, GIFSize) {
     AVURLAsset *asset = [AVURLAsset assetWithURL:videoURL];
 
     // Get the length of the video in seconds
-    float videoLength = (float)asset.duration.value/asset.duration.timescale;
+    float videoLength = 3;
     
     // How far along the video track we want to move, in seconds.
     float increment = (float)videoLength/frameCount;
@@ -131,8 +131,18 @@ typedef NS_ENUM(NSInteger, GIFSize) {
 
 + (NSURL *)createGIFforTimePoints:(NSArray *)timePoints fromURL:(NSURL *)url fileProperties:(NSDictionary *)fileProperties frameProperties:(NSDictionary *)frameProperties frameCount:(int)frameCount gifSize:(GIFSize)gifSize{
 	
-	NSString *timeEncodedFileName = [NSString stringWithFormat:@"%@-%lu.gif", fileName, (unsigned long)([[NSDate date] timeIntervalSince1970]*10.0)];
-    NSString *temporaryFile = [NSTemporaryDirectory() stringByAppendingString:timeEncodedFileName];
+    NSString *timeEncodedFileName = [[url.path stringByDeletingPathExtension] lastPathComponent];
+    if (timeEncodedFileName.length > 0) {
+        NSRange range = [timeEncodedFileName rangeOfString:@"temp_"];
+        if (range.location != NSNotFound) {
+            timeEncodedFileName = [timeEncodedFileName substringFromIndex:range.location + range.length];
+        }
+    } else {
+        timeEncodedFileName = [NSString stringWithFormat:@"%lu", (unsigned long)([[NSDate date] timeIntervalSince1970]*10.0)];
+    }
+    timeEncodedFileName = [fileName stringByAppendingFormat:@"_%@", [timeEncodedFileName stringByAppendingString:@".gif"]];
+    
+    NSString *temporaryFile = [[NSTemporaryDirectory() stringByAppendingPathComponent:@"UserVideo/GIF/"] stringByAppendingPathComponent:timeEncodedFileName];
     NSURL *fileURL = [NSURL fileURLWithPath:temporaryFile];
     if (fileURL == nil)
         return nil;
