@@ -133,19 +133,20 @@ typedef NS_ENUM(NSInteger, GIFSize) {
 	
     NSString *timeEncodedFileName = [[url.path stringByDeletingPathExtension] lastPathComponent];
     if (timeEncodedFileName.length > 0) {
-        NSRange range = [timeEncodedFileName rangeOfString:@"temp_"];
+        NSRange range = [timeEncodedFileName rangeOfString:@"compress_"];
         if (range.location != NSNotFound) {
             timeEncodedFileName = [timeEncodedFileName substringFromIndex:range.location + range.length];
         }
     } else {
-        timeEncodedFileName = [NSString stringWithFormat:@"%lu", (unsigned long)([[NSDate date] timeIntervalSince1970]*10.0)];
+        timeEncodedFileName = [NSString stringWithFormat:@"%lu", (unsigned long)([[NSDate date] timeIntervalSince1970] * 10.0)];
     }
     timeEncodedFileName = [fileName stringByAppendingFormat:@"_%@", [timeEncodedFileName stringByAppendingString:@".gif"]];
     
     NSString *temporaryFile = [[NSTemporaryDirectory() stringByAppendingPathComponent:@"UserVideo/GIF/"] stringByAppendingPathComponent:timeEncodedFileName];
     NSURL *fileURL = [NSURL fileURLWithPath:temporaryFile];
-    if (fileURL == nil)
+    if (!fileURL) {
         return nil;
+    }
 
     CGImageDestinationRef destination = CGImageDestinationCreateWithURL((__bridge CFURLRef)fileURL, kUTTypeGIF , frameCount, NULL);
     CGImageDestinationSetProperties(destination, (CFDictionaryRef)fileProperties);
