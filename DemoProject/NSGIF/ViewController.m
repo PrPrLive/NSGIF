@@ -17,6 +17,19 @@
 
     self.view.backgroundColor = [UIColor colorWithRed:0.13 green:0.16 blue:0.19 alpha:1];
     self.webView.backgroundColor = [UIColor colorWithRed:0.13 green:0.16 blue:0.19 alpha:1];
+    
+    NSString *tempPath = NSTemporaryDirectory();
+    NSString *gifFolderPath = [tempPath stringByAppendingPathComponent:@"UserVideo/GIF"];
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    BOOL isDir4 = NO;
+    BOOL isExist4 = [fileManager fileExistsAtPath:gifFolderPath isDirectory:&isDir4];
+    if (!isExist4 || (isExist4 && !isDir4)) {
+        NSError *error = nil;
+        BOOL succ = [fileManager createDirectoryAtPath:gifFolderPath withIntermediateDirectories:YES attributes:nil error:&error];
+        if (!succ) {
+            NSLog(@"%@", error);
+        }
+    }
 }
 
 -(void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {

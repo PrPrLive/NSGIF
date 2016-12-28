@@ -92,10 +92,10 @@ typedef NS_ENUM(NSInteger, GIFSize) {
     NSDictionary *fileProperties = [self filePropertiesWithLoopCount:loopCount];
     NSDictionary *frameProperties = [self framePropertiesWithDelayTime:delayTime];
     
-    AVURLAsset *asset = [AVURLAsset assetWithURL:videoURL];
+     AVURLAsset *asset = [AVURLAsset assetWithURL:videoURL];
 
     // Get the length of the video in seconds
-    float videoLength = 3;
+    float videoLength = MIN((float)asset.duration.value/asset.duration.timescale, 4.0f);
     
     // How far along the video track we want to move, in seconds.
     float increment = (float)videoLength/frameCount;
