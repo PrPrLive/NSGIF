@@ -103,6 +103,9 @@ typedef NS_ENUM(NSInteger, GIFSize) {
     // Add frames to the buffer
     NSMutableArray *timePoints = [NSMutableArray array];
     for (int currentFrame = 0; currentFrame<frameCount; ++currentFrame) {
+        if (!currentFrame) {
+            continue;
+        }
         float seconds = (float)increment * currentFrame;
         CMTime time = CMTimeMakeWithSeconds(seconds, [timeInterval intValue]);
         [timePoints addObject:[NSValue valueWithCMTime:time]];
